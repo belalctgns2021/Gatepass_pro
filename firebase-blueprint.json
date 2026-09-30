@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and role for FactoryPass security system",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["ADMIN", "MANAGER", "RECEPTION", "SECURITY"] },
+        "assignedGateId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "VisitorPass": {
+      "title": "VisitorPass",
+      "description": "Gate clearance pass issued for factory visitors with Manager/Admin approval workflow",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "pass_number": { "type": "string" },
+        "visitor_name": { "type": "string" },
+        "visitor_mobile": { "type": "string" },
+        "visitor_company": { "type": "string" },
+        "host_name": { "type": "string" },
+        "host_department": { "type": "string" },
+        "purpose": { "type": "string" },
+        "visit_date": { "type": "string" },
+        "expected_arrival": { "type": "string" },
+        "expected_departure": { "type": "string" },
+        "vehicle_type": { "type": "string" },
+        "vehicle_number": { "type": "string" },
+        "qr_token": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING_APPROVAL", "ACTIVE", "INSIDE", "EXITED", "CANCELLED", "EXPIRED", "REJECTED"] },
+        "requires_approval": { "type": "boolean" },
+        "approved_by": { "type": "string" },
+        "approved_by_role": { "type": "string" },
+        "approved_at": { "type": "string" },
+        "approval_remarks": { "type": "string" },
+        "created_by": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["pass_number", "visitor_name", "host_name", "visit_date", "qr_token", "status"]
+    },
+    "EntryExitLog": {
+      "title": "EntryExitLog",
+      "description": "Gate log of check-in and check-out events",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "visitor_pass_id": { "type": "string" },
+        "action": { "type": "string", "enum": ["ENTRY", "EXIT"] },
+        "gate_id": { "type": "string" },
+        "gate_name": { "type": "string" },
+        "security_user_id": { "type": "string" },
+        "security_guard_name": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "remarks": { "type": "string" },
+        "duration_minutes": { "type": "number" }
+      },
+      "required": ["visitor_pass_id", "action", "timestamp"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Multi-turn Gemini chatbot conversation thread message",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "model", "system"] },
+        "content": { "type": "string" },
+        "userId": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["role", "content", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile collection"
+    },
+    "/visitor_passes/{passId}": {
+      "schema": { "$ref": "#/entities/VisitorPass" },
+      "description": "Visitor gate passes collection"
+    },
+    "/entry_exit_logs/{logId}": {
+      "schema": { "$ref": "#/entities/EntryExitLog" },
+      "description": "Security gate logs collection"
+    },
+    "/users/{userId}/chat_messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "User specific Gemini AI chat history collection"
+    }
+  }
+}

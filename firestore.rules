@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions for user auth & authorization
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profile documents
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+    }
+
+    // Visitor passes collection
+    // Read: Public for gate verification & digital pass views
+    // Write: Authenticated users (Staff create, Managers & Admins approve/reject)
+    match /visitor_passes/{passId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+
+    // Entry Exit logs (Security Gate check-ins and check-outs)
+    match /entry_exit_logs/{logId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
+    }
+
+    // Chat history for Gemini Security Co-Pilot
+    match /users/{userId}/chat_messages/{messageId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Health check test doc
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "FactoryPass - QR Gate Pass & Visitor Management System",
+  "description": "Production-ready factory visitor gate pass management system with QR code verification, role-based access control, security entry/exit logging, and live emergency headcount.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
